@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerGuard AI | Electricity Bill Fraud Detection</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:#f5f9ff;
+color:#333;
+}
+
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:18px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#0d47a1;
+box-shadow:0 4px 12px rgba(0,0,0,.15);
+z-index:1000;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:white;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+margin-left:22px;
+font-weight:bold;
+transition:.3s;
+}
+
+nav a:hover{
+color:#ffd54f;
+}
+
+.hero{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
+url("https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1600&q=80");
+background-size:cover;
+background-position:center;
+color:white;
+}
+
+.hero h1{
+font-size:60px;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:22px;
+margin-bottom:35px;
+line-height:1.6;
+}
+
+.btn{
+padding:15px 35px;
+background:#ff9800;
+color:white;
+text-decoration:none;
+font-size:18px;
+border-radius:30px;
+font-weight:bold;
+transition:.3s;
+}
+
+.btn:hover{
+background:#ef6c00;
+}
+
+section{
+padding:90px 8%;
+}
+
+.title{
+text-align:center;
+font-size:40px;
+color:#0d47a1;
+margin-bottom:40px;
+}
+
+.about{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+align-items:center;
+}
+
+.about img{
+width:100%;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,.2);
+}
+
+.about p{
+font-size:18px;
+line-height:1.8;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+padding:30px;
+text-align:center;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,.12);
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+.card h3{
+margin:20px 0;
+color:#0d47a1;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.feature{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.12);
+}
+
+.feature h3{
+margin-bottom:15px;
+color:#1565c0;
+}
+
+.demo{
+max-width:550px;
+margin:auto;
+background:white;
+padding:35px;
+border-radius:15px;
+box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+input,select{
+width:100%;
+padding:14px;
+margin:12px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:17px;
+}
+
+button{
+width:100%;
+padding:15px;
+background:#1565c0;
+color:white;
+font-size:18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0d47a1;
+}
+
+#result{
+margin-top:20px;
+font-size:22px;
+text-align:center;
+font-weight:bold;
+}
+
+.contact{
+max-width:650px;
+margin:auto;
+}
+
+textarea{
+width:100%;
+height:150px;
+padding:15px;
+margin:12px 0;
+font-size:16px;
+border-radius:8px;
+}
+
+footer{
+background:#0d47a1;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:50px;
+}
+
+@media(max-width:768px){
+
+nav{
+display:none;
+}
+
+.about{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:40px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+<script>
+  window.wxOConfiguration = {
+    orchestrationID: "5c1c26d3c05c4fab8487efb265b0c5b2_165fc2f3-33f1-420d-9428-1baef5d6219c",
+    hostURL: "https://au-syd.watson-orchestrate.cloud.ibm.com",
+    rootElementID: "root",
+    deploymentPlatform: "ibmcloud",
+    crn: "crn:v1:bluemix:public:watsonx-orchestrate:au-syd:a/5c1c26d3c05c4fab8487efb265b0c5b2:165fc2f3-33f1-420d-9428-1baef5d6219c::",
+    chatOptions: {
+        agentId: "8bb99149-9667-4383-adfb-bbea4a9bb55a", 
+    }
+  };
+  setTimeout(function () {
+    const script = document.createElement('script');
+    script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+    script.addEventListener('load', function () {
+        wxoLoader.init();
+    });
+    document.head.appendChild(script);
+  }, 0);                     
+</script>
+
+<header>
+
+<div class="logo">⚡ PowerGuard AI</div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#services">Services</a>
+<a href="#features">Features</a>
+<a href="#demo">Demo</a>
+<a href="#contact">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero" id="home">
+
+<div>
+
+<h1>AI Electricity Bill Fraud Detection</h1>
+
+<p>
+Detect suspicious electricity usage and billing fraud using Artificial Intelligence,
+Machine Learning, and real-time analytics.
+</p>
+
+<a href="#about" class="btn">Explore Project</a>
+
+</div>
+
+</section>
+
+<section id="about">
+
+<h2 class="title">About The Project</h2>
+
+<div class="about">
+
+<img src="https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=900&q=80">
+
+<div>
+
+<p>
+
+PowerGuard AI is an intelligent electricity fraud detection system that helps
+electricity distribution companies identify abnormal power consumption patterns,
+meter tampering, illegal connections, and fake electricity bills.
+
+The system analyzes customer usage history using AI algorithms and instantly
+flags suspicious activities. It helps reduce financial losses, improve billing
+accuracy, and ensure fair electricity distribution.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="services">
+
+<h2 class="title">Our Services</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>⚡ Smart Meter Monitoring</h3>
+<p>Continuously monitors smart meter readings for abnormal behavior.</p>
+</div>
+
+<div class="card">
+<h3>🤖 AI Fraud Detection</h3>
+<p>Uses Machine Learning to detect unusual consumption patterns.</p>
+</div>
+
+<div class="card">
+<h3>📊 Risk Analysis</h3>
+<p>Assigns fraud risk scores for every electricity consumer.</p>
+</div>
+
+<div class="card">
+<h3>📈 Live Dashboard</h3>
+<p>Displays alerts, reports and fraud analytics in real time.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="features">
+
+<h2 class="title">System Features</h2>
+
+<div class="features">
+
+<div class="feature">
+<h3>🔍 Fraud Pattern Detection</h3>
+<p>Identifies sudden drops or spikes in electricity usage.</p>
+</div>
+
+<div class="feature">
+<h3>📡 Smart Meter Integration</h3>
+<p>Works with IoT-enabled smart electricity meters.</p>
+</div>
+
+<div class="feature">
+<h3>📧 Instant Alerts</h3>
+<p>Automatically notifies authorities about suspicious consumers.</p>
+</div>
+
+<div class="feature">
+<h3>📁 Automated Reports</h3>
+<p>Generates fraud reports for inspection teams.</p>
+</div>
+
+<div class="feature">
+<h3>🔒 Secure Data</h3>
+<p>Protects customer and billing information using encryption.</p>
+</div>
+
+<div class="feature">
+<h3>☁ Cloud Based</h3>
+<p>Stores meter data securely with cloud synchronization.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="demo">
+
+<h2 class="title">Fraud Detection Demo</h2>
+
+<div class="demo">
+
+<input type="number" id="units" placeholder="Monthly Electricity Units">
+
+<select id="meter">
+
+<option>Normal Meter</option>
+<option>Tampered Meter</option>
+
+</select>
+
+<button onclick="detectFraud()">
+Check Fraud Probability
+</button>
+
+<div id="result"></div>
+
+</div>
+
+</section>
+
+<section id="contact">
+
+<h2 class="title">Contact Us</h2>
+
+<div class="contact">
+
+<input type="text" placeholder="Your Name">
+
+<input type="email" placeholder="Email">
+
+<textarea placeholder="Describe your issue or inquiry"></textarea>
+
+<button>Send Message</button>
+
+</div>
+
+</section>
+
+<footer>
+
+<h3>
+© 2026 PowerGuard AI | Electricity Bill Fraud Detection System
+</h3>
+
+</footer>
+
+<script>
+
+function detectFraud(){
+
+let units=parseFloat(document.getElementById("units").value);
+
+let meter=document.getElementById("meter").value;
+
+let result=document.getElementById("result");
+
+if(isNaN(units)){
+
+result.style.color="red";
+result.innerHTML="Please enter electricity units.";
+return;
+
+}
+
+let message="";
+
+if(meter==="Tampered Meter" || units<30 || units>900){
+
+message="⚠ High Fraud Probability Detected";
+
+result.style.color="red";
+
+}
+
+else if(units<100){
+
+message="🟠 Medium Risk - Requires Inspection";
+
+result.style.color="orange";
+
+}
+
+else{
+
+message="✅ Normal Consumption - No Fraud Detected";
+
+result.style.color="green";
+
+}
+
+result.innerHTML=message;
+
+}
+
+window.addEventListener("scroll",()=>{
+
+document.querySelectorAll(".card,.feature").forEach((box)=>{
+
+if(box.getBoundingClientRect().top<window.innerHeight-100){
+
+box.style.opacity="1";
+box.style.transform="translateY(0)";
+
+}
+
+});
+
+});
+
+document.querySelectorAll(".card,.feature").forEach((box)=>{
+
+box.style.opacity="0";
+box.style.transform="translateY(40px)";
+box.style.transition=".8s";
+
+});
+
+</script>
+
+</body>
+</html>
